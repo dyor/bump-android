@@ -1,5 +1,6 @@
 package com.dyor.bump_android
 
+import BumpCalculator
 import Golfer
 import Hole
 import android.os.Bundle
@@ -259,26 +260,7 @@ fun DraggableGolfersList(golfers: MutableList<Golfer>) {
 
 
 
-fun calculateBumps(golfers: List<Golfer>, holes: List<Hole>): Map<String, List<Int>> {
-    // Sort the holes by difficulty, descending
-    val sortedHoles = holes.sortedBy { it.difficulty }
 
-    // Create a map to hold the result
-    val golferBumps = mutableMapOf<String, List<Int>>()
-
-    // Assign bumps for each golfer
-    golfers.forEach { golfer ->
-        var thisBump = golfer.bumps
-        if (golfer.bumps > 18) {
-            thisBump = thisBump-18
-        }
-
-        val bumps = sortedHoles.take(thisBump).map { it.number }
-        golferBumps[golfer.name] = bumps
-    }
-
-    return golferBumps
-}
 
 //@OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -286,7 +268,8 @@ fun BumpMatrixScreen(golfers: List<Golfer>, holes: List<Hole>, onBack: () -> Uni
     // Handle the system back button press
     //xxx BackHandler(onBack = onBack)
     // Calculate the bumps matrix
-    val bumpMatrix = calculateBumps(golfers, holes)
+    val bumpCalculator = BumpCalculator()
+    val bumpMatrix = bumpCalculator.calculateBumps(golfers, holes)
     //Log.d("tag", "$bumpMatrix")
 
     // Display the matrix
